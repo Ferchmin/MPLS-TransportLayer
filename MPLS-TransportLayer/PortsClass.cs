@@ -27,8 +27,6 @@ namespace MPLS_TransportLayer
 
         public PortsClass()
         {
-            Console.WriteLine("Tworze obiekt...");
-
             string myIpAddress = "127.0.0.1";
             int myPort = 8888;
 
@@ -50,8 +48,6 @@ namespace MPLS_TransportLayer
 
         public void ReceivedPacket(IAsyncResult res)
         {
-            Console.WriteLine("Odbieram dane...");
-
             //kończę odbieranie danych
             int size = cloudSocket.EndReceiveFrom(res, ref receivingEndPoint);
 
@@ -82,8 +78,6 @@ namespace MPLS_TransportLayer
 
         public void SendPacket(IAsyncResult res)
         {
-            Console.WriteLine("wysyłam dane...");
-
             int size = cloudSocket.EndSendTo(res);
             Console.WriteLine("Wysłaliśmy pakiet do: " + receivedIPEndPoint.Address + " port " + receivedIPEndPoint.Port);
             Console.WriteLine("Pakieto to: " + Encoding.UTF8.GetString(packet));
