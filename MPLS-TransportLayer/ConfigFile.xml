@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TransportLayer>
+  <myIPAddress>127.0.0.100</myIPAddress>
+  <myPortNumber>8888</myPortNumber>
+  <ForwardingTable>
+    <sourceIPAddress>127.0.1.0</sourceIPAddress>
+    <sourcePortNumber>1</sourcePortNumber>
+    <destinationIPAddress>127.0.2.0</destinationIPAddress>
+    <destinationPortNumber>1</destinationPortNumber>
+  </ForwardingTable>
+  <ForwardingTable>
+    <sourceIPAddress>127.0.2.0</sourceIPAddress>
+    <sourcePortNumber>1</sourcePortNumber>
+    <destinationIPAddress>127.0.1.1</destinationIPAddress>
+    <destinationPortNumber>1</destinationPortNumber>
+  </ForwardingTable>
+</TransportLayer>

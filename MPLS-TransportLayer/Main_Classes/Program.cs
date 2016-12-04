@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MPLS_TransportLayer.Packet_Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,15 +18,8 @@ namespace MPLS_TransportLayer
     {
         static void Main(string[] args)
         {
-            PortsClass nowy = new PortsClass();
-            string end = null;
-
-            do
-            {
-                Console.WriteLine("...");
-                end = Console.ReadLine();
-            }
-            while (end != "end");
+            DeviceClass cloud = new DeviceClass();
+            //Test test = new Test();
         }
     }
 }

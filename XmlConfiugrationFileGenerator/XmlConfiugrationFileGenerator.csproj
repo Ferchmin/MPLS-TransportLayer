@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FBFF8307-0779-4654-8B91-5F5EE910EA57}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{5A98E58B-BD42-4F76-B4F3-07173162E535}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MPLS_TransportLayer</RootNamespace>
-    <AssemblyName>MPLS-TransportLayer</AssemblyName>
+    <RootNamespace>XmlConfiugrationFileGenerator</RootNamespace>
+    <AssemblyName>XmlConfiugrationFileGenerator</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -39,30 +39,52 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Management_Classes\ConfigurationClass.cs" />
-    <Compile Include="Main_Classes\DeviceClass.cs" />
-    <Compile Include="Packet_Classes\ManagementPacket.cs" />
-    <Compile Include="Packet_Classes\MPLSPacket.cs" />
-    <Compile Include="Packet_Classes\PacketStructure.cs" />
-    <Compile Include="Main_Classes\Test.cs" />
-    <Compile Include="XML_ConfigurationFile_Classes\ConfigXMLFile.cs" />
-    <Compile Include="Management_Classes\ForwardingClass.cs" />
-    <Compile Include="XML_ConfigurationFile_Classes\LoadingXMLFile.cs" />
-    <Compile Include="Networking_classes\PortsClass.cs" />
-    <Compile Include="Main_Classes\Program.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ConfigFile.xml" />
+    <ProjectReference Include="..\MPLS-TransportLayer\MPLS-TransportLayer.csproj">
+      <Project>{FBFF8307-0779-4654-8B91-5F5EE910EA57}</Project>
+      <Name>MPLS-TransportLayer</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
