@@ -55,16 +55,31 @@ namespace MPLS_TransportLayer
          */
         public byte[] MakeForward(byte[] receivedPacket, ref IPEndPoint destinationIpEndPoint)
         {
+            _cloudHeader = 0;
+            _inputString = null;
+            _outputString = null;
+            _finalPacket = null;
+            _destinationPoint = null;
+
             MPLSPacket packet = new MPLSPacket(receivedPacket);
 
             GetCloudHeader(packet);
             MakeInputString(destinationIpEndPoint.Address.ToString(), _cloudHeader);
             FindPair();
-            ChangeHeader(packet);
-            ForwardPacket(packet);
-            CreateDestinationPort(GetFromString(_outputString, 1), ref destinationIpEndPoint);
-
-            return _finalPacket;
+            if (_outputString != null)
+            {
+                ChangeHeader(packet);
+                ForwardPacket(packet);
+                if (destinationIpEndPoint != null)
+                {
+                    CreateDestinationPort(GetFromString(_outputString, 1), ref destinationIpEndPoint);
+                    return _finalPacket;
+                }
+                else
+                    return null;
+            }
+            else
+                return null;   
         }
 
         /*
@@ -98,7 +113,8 @@ namespace MPLS_TransportLayer
                 _forwardingTable.TryGetValue(_inputString, out _outputString);
             else
             {
-                //wypisz log, ze nie ma takiego dopasowania
+                //tworzę logi
+                DeviceClass.MakeLog("ERROR - Cannot find the value in ForwardingTable of key:" + _inputString);
             }
         }
 
@@ -132,7 +148,8 @@ namespace MPLS_TransportLayer
             }
             else
             {
-                //wypisz log, ze nie ma takiego dopasowania
+                //tworzę logi
+                DeviceClass.MakeLog("ERROR - Cannot find the value in IpToPortTable of key:" + destinationIp);
             }
         }
 

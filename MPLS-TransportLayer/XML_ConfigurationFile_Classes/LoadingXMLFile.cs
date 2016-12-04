@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Xml.Serialization;
 
 /*
@@ -22,11 +23,19 @@ namespace MPLS_TransportLayer.Packet_Classes
         {
             object obj = new object();
             XmlSerializer deserializer = new XmlSerializer(typeof(ConfigXMLFile));
-            using (TextReader reader = new StreamReader(configFilePath))
+            try
             {
-                obj = deserializer.Deserialize(reader);
+                using (TextReader reader = new StreamReader(configFilePath))
+                {
+                    obj = deserializer.Deserialize(reader);
+                }
+                return obj as ConfigXMLFile;
             }
-            return obj as ConfigXMLFile;
+            catch (Exception e)
+            {
+                DeviceClass.MakeLog("ERROR - Deserialization cannot be complited.");
+                return null;
+            }
         }
 
         /*
@@ -36,9 +45,16 @@ namespace MPLS_TransportLayer.Packet_Classes
         public static void Serialization(string configFilePath, ConfigXMLFile dataSource)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(ConfigXMLFile));
-            using (TextWriter writer = new StreamWriter(configFilePath, false))
+            try
             {
-                serializer.Serialize(writer, dataSource);
+                using (TextWriter writer = new StreamWriter(configFilePath, false))
+                {
+                    serializer.Serialize(writer, dataSource);
+                }
+            }
+            catch (Exception e)
+            {
+                DeviceClass.MakeLog("ERROR - Serialization cannot be complited.");
             }
         }
     }

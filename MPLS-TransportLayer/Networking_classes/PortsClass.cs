@@ -58,6 +58,9 @@ namespace MPLS_TransportLayer
             _cloudIpEndPoint = new IPEndPoint((IPAddress.Parse(_myIpAddress)), _myPort);
             _cloudSocket.Bind(_cloudIpEndPoint);
 
+            //LOG
+            DeviceClass.MakeLog("INFO - Cloud Socket: IP:" + _myIpAddress + " Port:" + _myPort);
+
             //tworzymy punkt końcowy, z którego będziemy odbierali dane (z jakiegokolwiek interfejsu i z jakiegokolwiek portu)
             _receivingIPEndPoint = new IPEndPoint(IPAddress.Any, 0);
             _receivingEndPoint = (EndPoint)_receivingIPEndPoint;
@@ -67,6 +70,9 @@ namespace MPLS_TransportLayer
 
             //nasłuchujemy
             _cloudSocket.BeginReceiveFrom(_buffer, 0, _buffer.Length, SocketFlags.None, ref _receivingEndPoint, new AsyncCallback(ReceivedPacket), null);
+
+            //LOG
+            DeviceClass.MakeLog("INFO - Start Listening.");
         }
 
         /*
@@ -96,17 +102,17 @@ namespace MPLS_TransportLayer
             _cloudSocket.BeginReceiveFrom(_buffer, 0, _buffer.Length, SocketFlags.None, ref _receivingEndPoint, new AsyncCallback(ReceivedPacket), null);
 
             //tworzę logi
-            Console.WriteLine("Otrzymaliśmy pakiet od: " + _receivedIPEndPoint.Address + " port " + _receivedIPEndPoint.Port);
-            //Console.WriteLine("Pakieto to: " + Encoding.UTF8.GetString(receivedPacket));
+            DeviceClass.MakeLog("INFO - Received packet from: IP:" + _receivedIPEndPoint.Address + " Port: " + _receivedIPEndPoint.Port);
 
             //tworze instancję do wysłania i przekazuję pakiet do metody przetwarzającej
             //przekazuję pakiet do metody przetwarzającej
             //metoda zmienia mi referęcję lokalnego punktu końcowego na docelową
-            byte[] destinationPacket;
+            byte[] destinationPacket = null;
             destinationPacket = ProcessReceivedPacket(receivedPacket, ref _receivedIPEndPoint);
 
-            //inicjuje start wysyłania przetworzonego pakietu do nadawcy
-            _cloudSocket.BeginSendTo(destinationPacket, 0, destinationPacket.Length, SocketFlags.None, _receivedIPEndPoint, new AsyncCallback(SendPacket), _receivedIPEndPoint);
+            if(destinationPacket != null)
+                //inicjuje start wysyłania przetworzonego pakietu do nadawcy
+                _cloudSocket.BeginSendTo(destinationPacket, 0, destinationPacket.Length, SocketFlags.None, _receivedIPEndPoint, new AsyncCallback(SendPacket), _receivedIPEndPoint);
         }
 
         /*
@@ -120,7 +126,7 @@ namespace MPLS_TransportLayer
             var endPoint = res.AsyncState as IPEndPoint;
 
             //tworzę logi
-            Console.WriteLine("Wysłaliśmy pakiet do: " + endPoint.Address + " port " + endPoint.Port);
+            DeviceClass.MakeLog("INFO - Packet send to: IP:" + endPoint.Address + " Port: " + endPoint.Port);
         }
 
         /*
