@@ -22,6 +22,7 @@ namespace MPLS_TransportLayer
          * - _outputString, czyli string wyjściowy (IP_węzłaDocelowego + interfejs_węzłaDocelowego)
          * - _cloudHeader, czyli nagłówek chmury kablowej
          */
+        #region Private Variables
         private string _inputString;
         private string _outputString;
         private int _cloudHeader;
@@ -30,7 +31,7 @@ namespace MPLS_TransportLayer
         private Dictionary<string, string> _ipToPortTable;
 
         private byte[] _finalPacket;
-        private IPEndPoint _destinationPoint;
+        #endregion
 
         /*
          * Konstruktor klasy
@@ -51,7 +52,6 @@ namespace MPLS_TransportLayer
          * - zmiana nagłówka chmury na podstawie stringa wyjściowego
          * - stworzenie punktu końcowego
          * - przekierowanie pakietu do odpowiedniego wątku na podstawie stringa wyjściowego
-         * 
          */
         public byte[] MakeForward(byte[] receivedPacket, ref IPEndPoint destinationIpEndPoint)
         {
@@ -59,13 +59,14 @@ namespace MPLS_TransportLayer
             _inputString = null;
             _outputString = null;
             _finalPacket = null;
-            _destinationPoint = null;
 
+            //tworzę pakiet MPLS do odczytywania danych
             MPLSPacket packet = new MPLSPacket(receivedPacket);
 
             GetCloudHeader(packet);
             MakeInputString(destinationIpEndPoint.Address.ToString(), _cloudHeader);
             FindPair();
+
             if (_outputString != null)
             {
                 ChangeHeader(packet);
@@ -148,8 +149,9 @@ namespace MPLS_TransportLayer
             }
             else
             {
+                destinationIpEndPoint = null;
                 //tworzę logi
-                DeviceClass.MakeLog("ERROR - Cannot find the value in IpToPortTable of key:" + destinationIp);
+                DeviceClass.MakeLog("ERROR - Cannot find the value in IpToPortTable of key: " + destinationIp);
             }
         }
 

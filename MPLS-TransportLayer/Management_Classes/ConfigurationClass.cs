@@ -25,6 +25,7 @@ namespace MPLS_TransportLayer
          * - IpToPortTable - słownik zawierający adres IP i numer portu, który jest przypisany do danego elementu sieciowego
          * (jest on potrzebny do prawidłowego stworzenia punktów końcowych)
          */
+        #region Private Variables
         private string _filePath;
         private ConfigXMLFile _configFile;
 
@@ -33,6 +34,10 @@ namespace MPLS_TransportLayer
         private Dictionary<string, string> _forwardingTable;
         private Dictionary<string, string> _ipToPortTable;
 
+        private bool _incorrectConfigFileFormat;
+        #endregion
+
+        #region Public Properties
         public string FilePath
         {
             get { return _filePath; }
@@ -53,6 +58,11 @@ namespace MPLS_TransportLayer
         {
             get { return _ipToPortTable; }
         }
+        public bool IncorrectConfigFileFormat
+        {
+            get { return _incorrectConfigFileFormat; }
+        }
+        #endregion
 
 
         /*
@@ -67,6 +77,7 @@ namespace MPLS_TransportLayer
             _myPortNumber = 0;
             _forwardingTable = new Dictionary<string, string>();
             _ipToPortTable = new Dictionary<string, string>();
+            _incorrectConfigFileFormat = false;
 
             PreparaFile();
             ReadFile();
@@ -91,33 +102,39 @@ namespace MPLS_TransportLayer
             //deserializacja pliku
             _configFile = LoadingXMLFile.Deserialization(_filePath);
 
-            //ustawiamy adres ip i numer portu chmury kablowej
-            _myIpAddres = _configFile.XML_myIPAddress;
-            _myPortNumber = _configFile.XML_myPortNumber;
-
-            //tworzymy wpisy do słownika forwardingu
-            foreach(ForwardingTableRecord record in _configFile.XML_ForwardingTable)
+            //sprawdzamy, czy odczytaliśmy plik
+            if (_configFile != null)
             {
-                string keyData;
-                string valueData;
+                //ustawiamy adres ip i numer portu chmury kablowej
+                _myIpAddres = _configFile.XML_myIPAddress;
+                _myPortNumber = _configFile.XML_myPortNumber;
 
-                keyData = record.XML_sourceIPAddress + "-" + record.XML_sourceInterfaceNumber;
-                valueData = record.XML_destinationIPAddress + "-" + record.XML_destinationInterfaceNumber;
+                //tworzymy wpisy do słownika forwardingu
+                foreach (ForwardingTableRecord record in _configFile.XML_ForwardingTable)
+                {
+                    string keyData;
+                    string valueData;
 
-                _forwardingTable.Add(keyData, valueData);
+                    keyData = record.XML_sourceIPAddress + "-" + record.XML_sourceInterfaceNumber;
+                    valueData = record.XML_destinationIPAddress + "-" + record.XML_destinationInterfaceNumber;
+
+                    _forwardingTable.Add(keyData, valueData);
+                }
+
+                //tworzymy wpisy do słownika punktów końcowych
+                foreach (IpToPortTableRecord record in _configFile.XML_IpToPortTable)
+                {
+                    string keyData;
+                    string valueData;
+
+                    keyData = record.XML_IpAddress;
+                    valueData = record.XML_PortNumber;
+
+                    _ipToPortTable.Add(keyData, valueData);
+                }
             }
-
-            //tworzymy wpisy do słownika punktów końcowych
-            foreach (IpToPortTableRecord record in _configFile.XML_IpToPortTable)
-            {
-                string keyData;
-                string valueData;
-
-                keyData = record.XML_IpAddress;
-                valueData = record.XML_PortNumber;
-
-                _ipToPortTable.Add(keyData, valueData);
-            }
+            else
+                _incorrectConfigFileFormat = true;
         }
     }
 }

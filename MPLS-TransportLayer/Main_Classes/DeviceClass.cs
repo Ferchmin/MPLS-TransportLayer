@@ -11,6 +11,7 @@ namespace MPLS_TransportLayer
 {
     class DeviceClass
     {
+        #region Variables
         private static string _fileLogPath;
         private static int _logID;
 
@@ -23,7 +24,7 @@ namespace MPLS_TransportLayer
         {
             get { return _forwardingManager; }
         }
-
+        #endregion
 
         /*
          * Konstruktor
@@ -40,19 +41,25 @@ namespace MPLS_TransportLayer
             InitializeLogLastIdNumber();
 
             //LOG
-            MakeLog("Inicjalizacja wartości rozruchowych programu.");
+            MakeLog("INFO - Initialization process started.");
 
             //wczytywanie ścieżki pliku konfiguracyjnego
             ReadConfigFilePath();
 
             //inicjowanie lokalnych zmiennych
             _configDataSource = new ConfigurationClass(_fileConfigurationPath);
-            _forwardingManager = new ForwardingClass
-                (_configDataSource.ForwardingTable, _configDataSource.IpToPortTable);
-            _socket = new PortsClass(this, _configDataSource.MyIpAddress, _configDataSource.MyPortNumber);
 
-            //uruchomienie pracy urządzenia
-            StartWorking();
+            if (!_configDataSource.IncorrectConfigFileFormat)
+            {
+                _forwardingManager = new ForwardingClass
+                    (_configDataSource.ForwardingTable, _configDataSource.IpToPortTable);
+                _socket = new PortsClass(this, _configDataSource.MyIpAddress, _configDataSource.MyPortNumber);
+
+                //uruchomienie pracy urządzenia
+                StartWorking();
+            }
+            else
+                StopWorking("Your configuration file is incorect.\nPlease close the application, repair configuration file and run CloudProgram again.");
         }
 
         /*
@@ -61,12 +68,19 @@ namespace MPLS_TransportLayer
        */
         private void ReadConfigFilePath()
         {
-            do
-            {
-                Console.WriteLine("Podaj ścieżkę pliku konfiguracyjnego");
-                _fileConfigurationPath = Console.ReadLine();
+            Console.WriteLine("\nEnter the path of the configuration file:");
+            _fileConfigurationPath = Console.ReadLine();
+            Console.WriteLine();
 
-            } while (!File.Exists(_fileConfigurationPath));
+            bool fileNotExist = !File.Exists(_fileConfigurationPath);
+
+            while(fileNotExist)
+            {
+                Console.WriteLine("Cannot find the file. Please enter the right path.");
+                _fileConfigurationPath = Console.ReadLine();
+                fileNotExist = !File.Exists(_fileConfigurationPath);
+                Console.WriteLine();
+            }
         }
 
         /*
@@ -108,16 +122,16 @@ namespace MPLS_TransportLayer
         }
 
 
-
         /*
          * Główna metoda programu.
         */
-        public void StartWorking()
+        private void StartWorking()
         {
-            MakeLog("INFO - Start working...");
+            MakeLog("INFO - Start working.");
 
-            Console.WriteLine("Program działa - aby wyłączyć wpisz end.");
-            Console.WriteLine("<-------------------------------------->");
+            Console.WriteLine();
+            Console.WriteLine("Cloud is working. Write 'end' to close the program.");
+            Console.WriteLine("<------------------------------------------------->");
             string end = null;
             do
             {
@@ -126,7 +140,25 @@ namespace MPLS_TransportLayer
             while (end != "end");
 
             //LOG
-            DeviceClass.MakeLog("INFO - Stop working...");
+            DeviceClass.MakeLog("INFO - Stop working.");
         }
+
+        /*
+         * Metoda kończąca pracę chmury spowodowane błędem opisanym w parametrze reason.
+        */
+        public void StopWorking(string reason)
+        {
+            Console.WriteLine();
+            Console.WriteLine(reason);
+            Console.WriteLine("Click 'enter' to close the application...");
+            Console.ReadLine();
+
+            //LOG
+            DeviceClass.MakeLog("INFO - Stop working.");
+
+            //wyłącz konsolę i zwolnij calą pamięć alokowaną
+            Environment.Exit(0);
+        }
+        
     }
 }

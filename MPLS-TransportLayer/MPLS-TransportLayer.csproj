@@ -45,16 +45,14 @@
   <ItemGroup>
     <Compile Include="Management_Classes\ConfigurationClass.cs" />
     <Compile Include="Main_Classes\DeviceClass.cs" />
-    <Compile Include="Packet_Classes\ManagementPacket.cs" />
     <Compile Include="Packet_Classes\MPLSPacket.cs" />
     <Compile Include="Packet_Classes\PacketStructure.cs" />
-    <Compile Include="Main_Classes\Test.cs" />
-    <Compile Include="XML_ConfigurationFile_Classes\ConfigXMLFile.cs" />
     <Compile Include="Management_Classes\ForwardingClass.cs" />
-    <Compile Include="XML_ConfigurationFile_Classes\LoadingXMLFile.cs" />
     <Compile Include="Networking_classes\PortsClass.cs" />
     <Compile Include="Main_Classes\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XML_ConfigurationFile_Classes\ConfigXMLFile.cs" />
+    <Compile Include="XML_ConfigurationFile_Classes\LoadingXMLFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
