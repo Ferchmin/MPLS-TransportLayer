@@ -94,7 +94,7 @@ namespace MPLS_TransportLayer
 
             using (StreamWriter file = new StreamWriter(_fileLogPath, true))
             {
-                log = "#" + logID + " | " + DateTime.Now.ToString("hh:mm:ss") + " " + logDescription;
+                log = "#" + _logID + " | " + DateTime.Now.ToString("hh:mm:ss") + " " + logDescription;
                 file.WriteLine(log);
                 _logID++;
             }
