@@ -64,12 +64,14 @@ namespace MPLS_TransportLayer
             MPLSPacket packet = new MPLSPacket(receivedPacket);
 
             GetCloudHeader(packet);
+            DeviceClass.MakeLog("INFO - Source interface: " + packet.SourceInterface);
             MakeInputString(destinationIpEndPoint.Address.ToString(), _cloudHeader);
             FindPair();
 
             if (_outputString != null)
             {
-                ChangeHeader(packet);
+                ChangeHeader(packet); 
+                DeviceClass.MakeLog("INFO - Destination interface: " + packet.SourceInterface);
                 ForwardPacket(packet);
                 if (destinationIpEndPoint != null)
                 {

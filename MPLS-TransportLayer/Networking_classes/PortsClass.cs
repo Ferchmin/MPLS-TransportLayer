@@ -164,6 +164,8 @@ namespace MPLS_TransportLayer
             //tworzę logi
             DeviceClass.MakeLog("INFO - Packet send to: IP:" + endPoint.Address + " Port: " + endPoint.Port);
 
+            //oddzielenie logów
+            Console.WriteLine();
         }
 
         /*

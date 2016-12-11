@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 /*
  * Klasa odpowiadająca za działanie całego urządzenia.
@@ -24,6 +25,8 @@ namespace MPLS_TransportLayer
         {
             get { return _forwardingManager; }
         }
+
+        private static ReaderWriterLockSlim _writeLock = new ReaderWriterLockSlim();
         #endregion
 
         /*
@@ -90,16 +93,38 @@ namespace MPLS_TransportLayer
         */
         public static void MakeLog(string logDescription)
         {
-            string log;
 
-            using (StreamWriter file = new StreamWriter(_fileLogPath, true))
-            {
-                log = "#" + _logID + " | " + DateTime.Now.ToString("hh:mm:ss") + " " + logDescription;
-                file.WriteLine(log);
-                _logID++;
-            }
+            //Console.WriteLine(log);
+            string log = "#" + _logID + " | " + DateTime.Now.ToString("hh:mm:ss") + " " + logDescription;
+            _logID++;
+
+            WriteToFileThreadSafe(log, _fileLogPath);
 
             Console.WriteLine(log);
+        }
+
+
+        /*
+        * Metoda odpowiedzialna za bezpieczne zapisywanie logów do pliku.
+       */
+        public static void WriteToFileThreadSafe(string text, string path)
+        {
+            // Set Status to Locked
+            _writeLock.EnterWriteLock();
+            try
+            {
+                // Append text to the file
+                using (StreamWriter sw = File.AppendText(path))
+                {
+                    sw.WriteLine(text);
+                    sw.Close();
+                }
+            }
+            finally
+            {
+                // Release lock
+                _writeLock.ExitWriteLock();
+            }
         }
 
         /*
